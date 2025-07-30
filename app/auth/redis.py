@@ -1,5 +1,5 @@
 # app/auth/redis.py
-import aioredis
+#import aioredis
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -11,7 +11,7 @@ async def get_redis():
         )
     return get_redis.redis
 
-async def add_to_blacklist(jti: str, exp: int):
+#async def add_to_blacklist(jti: str, exp: int):
     """Add a token's JTI to the blacklist"""
     redis = await get_redis()
     await redis.set(f"blacklist:{jti}", "1", ex=exp)
