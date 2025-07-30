@@ -1,264 +1,99 @@
-# 📦 Project Setup
+Module 14: Finalizing BREAD, New Feature & Deployment
+This repository contains the solution for Module 14, which is the culmination of our backend and CI/CD work. This module focuses on bringing the full BREAD (Browse, Read, Edit, Add, Delete) functionality for calculations to the frontend, integrating it seamlessly with our JWT-secured backend. Additionally, a new, custom project feature has been implemented, showcasing extended application capabilities.
 
----
+Project Overview
+In this module, the primary goal was to make the calculation management fully interactive on the frontend and to integrate a unique final project feature. This involved developing user interfaces for all calculation operations, ensuring client-side validation, and extending Playwright E2E tests to cover these new interactions. The existing Docker-based CI/CD pipeline was maintained to automate testing and deployment, ensuring a fully functional, secure, tested, and containerized Python web application as the final deliverable.
 
-# 🧩 1. Install Homebrew (Mac Only)
+Key Features and Learning Outcomes
+This project demonstrates:
 
-> Skip this step if you're on Windows.
+Full Frontend BREAD for Calculations: Implemented web interfaces for adding, browsing, viewing, editing, and deleting calculation records.
 
-Homebrew is a package manager for macOS.  
-You’ll use it to easily install Git, Python, Docker, etc.
+Seamless Frontend-Backend Integration: Frontend functionality communicates securely with the JWT-authenticated FastAPI backend.
 
-**Install Homebrew:**
+Custom Final Project Feature: A new, extended feature has been added to the application, showcasing additional development capabilities.
 
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
+Client-Side Validation: Enhanced user experience with JavaScript validation for input fields on frontend forms.
 
-**Verify Homebrew:**
+Comprehensive Automated Testing: Extended unit, integration, and Playwright End-to-End (E2E) tests cover all new and existing functionalities, ensuring robustness.
 
-```bash
-brew --version
-```
+Robust CI/CD Pipeline: The GitHub Actions workflow automates building, scanning (with Trivy), and deploying the Docker image to Docker Hub upon successful test completion.
 
-If you see a version number, you're good to go.
+Containerization & Deployment: Continued application of Docker for containerizing the entire application stack and deploying it.
 
----
+Security Best Practices: Maintained secure authentication and authorization, including password hashing and JWT handling.
 
-# 🧩 2. Install and Configure Git
+(Optional) Alembic Integration: (If applicable to your custom feature) Demonstrated professional database migration handling.
 
-## Install Git
+How to Run the Application and Tests Locally
+To set up the project and run the application/tests on your local machine, follow these steps:
 
-- **MacOS (using Homebrew)**
+Clone the repository:
 
-```bash
-brew install git
-```
+git clone https://github.com/camerunhannah/Assignment-14.git
+cd Assignment-14/module14_is601
 
-- **Windows**
+(Note: This project was re-initialized to create a clean Git history, so git clone will pull your unique project history.)
 
-Download and install [Git for Windows](https://git-scm.com/download/win).  
-Accept the default options during installation.
+Create and activate a Python virtual environment:
 
-**Verify Git:**
+python3.12 -m venv venv # Use your specific Python version if different
+source venv/bin/activate
 
-```bash
-git --version
-```
+Install project dependencies:
 
----
-
-## Configure Git Globals
-
-Set your name and email so Git tracks your commits properly:
-
-```bash
-git config --global user.name "Your Name"
-git config --global user.email "your_email@example.com"
-```
-
-Confirm the settings:
-
-```bash
-git config --list
-```
-
----
-
-## Generate SSH Keys and Connect to GitHub
-
-> Only do this once per machine.
-
-1. Generate a new SSH key:
-
-```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
-```
-
-(Press Enter at all prompts.)
-
-2. Start the SSH agent:
-
-```bash
-eval "$(ssh-agent -s)"
-```
-
-3. Add the SSH private key to the agent:
-
-```bash
-ssh-add ~/.ssh/id_ed25519
-```
-
-4. Copy your SSH public key:
-
-- **Mac/Linux:**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | pbcopy
-```
-
-- **Windows (Git Bash):**
-
-```bash
-cat ~/.ssh/id_ed25519.pub | clip
-```
-
-5. Add the key to your GitHub account:
-   - Go to [GitHub SSH Settings](https://github.com/settings/keys)
-   - Click **New SSH Key**, paste the key, save.
-
-6. Test the connection:
-
-```bash
-ssh -T git@github.com
-```
-
-You should see a success message.
-
----
-
-# 🧩 3. Clone the Repository
-
-Now you can safely clone the course project:
-
-```bash
-git clone <repository-url>
-cd <repository-directory>
-```
-
----
-
-# 🛠️ 4. Install Python 3.10+
-
-## Install Python
-
-- **MacOS (Homebrew)**
-
-```bash
-brew install python
-```
-
-- **Windows**
-
-Download and install [Python for Windows](https://www.python.org/downloads/).  
-✅ Make sure you **check the box** `Add Python to PATH` during setup.
-
-**Verify Python:**
-
-```bash
-python3 --version
-```
-or
-```bash
-python --version
-```
-
----
-
-## Create and Activate a Virtual Environment
-
-(Optional but recommended)
-
-```bash
-python3 -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate.bat  # Windows
-```
-
-### Install Required Packages
-
-```bash
+pip install --upgrade pip
 pip install -r requirements.txt
-```
 
----
+Install Playwright browser dependencies (for end-to-end tests):
 
-# 🐳 5. (Optional) Docker Setup
+sudo ../venv/bin/playwright install-deps
 
-> Skip if Docker isn't used in this module.
+Start Docker Compose services (PostgreSQL, pgAdmin, and FastAPI app):
+Ensure Docker Desktop is running. If you encounter any conflicts, run docker compose down -v first to clear all old containers and volumes.
 
-## Install Docker
+docker compose up --build -d
 
-- [Install Docker Desktop for Mac](https://www.docker.com/products/docker-desktop/)
-- [Install Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
+Access the Front-End Application (Manual Checks):
+Once Docker Compose is running, open your web browser and navigate to:
 
-## Build Docker Image
+Login Page: http://localhost:8000/login
 
-```bash
-docker build -t <image-name> .
-```
+Register Page: http://localhost:8000/register
 
-## Run Docker Container
+Dashboard (after login): http://localhost:8000/dashboard
+Manually test user registration, login, and all calculation BREAD operations (Add, Browse, View, Edit, Delete) on these pages.
 
-```bash
-docker run -it --rm <image-name>
-```
+Run Automated Tests:
+After your Docker Compose services are running, execute your test suite:
 
----
+pytest
 
-# 🚀 6. Running the Project
+CI/CD Pipeline and Docker Hub Deployment
+This project utilizes GitHub Actions for its robust CI/CD pipeline. Upon every push to the main branch, the workflow automatically:
 
-- **Without Docker**:
+Checks out the code.
 
-```bash
-python main.py
-```
+Sets up Python and caches pip dependencies.
 
-(or update this if the main script is different.)
+Installs project dependencies.
 
-- **With Docker**:
+Runs all unit, integration, and end-to-end tests against a dedicated PostgreSQL container.
 
-```bash
-docker run -it --rm <image-name>
-```
+Builds the Docker image for the application.
 
----
+Scans the Docker image for vulnerabilities using Trivy.
 
-# 📝 7. Submission Instructions
+If all tests and security scans pass, the Docker image is pushed to Docker Hub.
 
-After finishing your work:
+Docker Hub Repository
+The Docker image for this application is deployed to the following Docker Hub repository:
 
-```bash
-git add .
-git commit -m "Complete Module X"
-git push origin main
-```
+https://hub.docker.com/r/camhannah/module14_is601
 
-Then submit the GitHub repository link as instructed.
+Reflections and Insights
+This Module 14 really connected the dots from earlier stuff, bringing my secure user and calculation models to life with FastAPI routes. Doing user login and registration, plus those BREAD operations for calculations, felt like building the actual frontend parts of the backend logic. My SQLAlchemy models were the solid backbone, and the Pydantic schemas just smoothly handled getting data in correctly and sending it back out right. Like, the UserCreate schema made sure registrations were clean, and UserResponse kept private user details safe.
 
----
+Testing with Pytest and Docker was super important for making sure everything was reliable. Running tests against a real PostgreSQL database, not just fake stuff, proved that the whole flow, from hitting the API to what happened in the database, actually worked. This caught little issues that my unit tests alone couldn't. Thinking about security, these endpoints are locked down with a few layers. There is the password hashing when you log in, Pydantic's data checks, and importantly, making sure users can only mess with their own calculations. This really cemented how important solid security practices are. This whole integration thing just makes my understanding of building strong and safe web APIs even clearer.
 
-# 🔥 Useful Commands Cheat Sheet
-
-| Action                         | Command                                          |
-| ------------------------------- | ------------------------------------------------ |
-| Install Homebrew (Mac)          | `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` |
-| Install Git                     | `brew install git` or Git for Windows installer |
-| Configure Git Global Username  | `git config --global user.name "Your Name"`      |
-| Configure Git Global Email     | `git config --global user.email "you@example.com"` |
-| Clone Repository                | `git clone <repo-url>`                          |
-| Create Virtual Environment     | `python3 -m venv venv`                           |
-| Activate Virtual Environment   | `source venv/bin/activate` / `venv\Scripts\activate.bat` |
-| Install Python Packages        | `pip install -r requirements.txt`               |
-| Build Docker Image              | `docker build -t <image-name> .`                |
-| Run Docker Container            | `docker run -it --rm <image-name>`               |
-| Push Code to GitHub             | `git add . && git commit -m "message" && git push` |
-
----
-
-# 📋 Notes
-
-- Install **Homebrew** first on Mac.
-- Install and configure **Git** and **SSH** before cloning.
-- Use **Python 3.10+** and **virtual environments** for Python projects.
-- **Docker** is optional depending on the project.
-
----
-
-# 📎 Quick Links
-
-- [Homebrew](https://brew.sh/)
-- [Git Downloads](https://git-scm.com/downloads)
-- [Python Downloads](https://www.python.org/downloads/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [GitHub SSH Setup Guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh)
+#Docker #FastAPI #PostgreSQL #Testing #CI_CD #DevOps #SQLAlchemy #Pydantic #Security #SoftwareDevelopment #Learning #Database #WebDevelopment #Git #Automation #Containerization #DockerHub #Frontend #BREAD #E2ETesting #Playwright #FinalProject
